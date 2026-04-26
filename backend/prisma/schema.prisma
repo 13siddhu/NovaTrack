@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications JobApplication[]
+  notifications Notification[]
+}
+
+model JobApplication {
+  id             String   @id @default(uuid())
+  companyName    String
+  jobRole        String
+  location       String?
+  salary         String?
+  jobLink        String?
+  status         String   @default("Applied") // Applied, Interview, Rejected, Offer
+  appliedDate    DateTime @default(now())
+  nextFollowUp   DateTime?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
