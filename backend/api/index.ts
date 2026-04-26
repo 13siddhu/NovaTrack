@@ -1,13 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as express from 'express';
 
 const server = express();
+let cachedApp: INestApplication;
 
 export const createNestServer = async (expressInstance: express.Express) => {
+  if (cachedApp) return cachedApp;
+
   const app = await NestFactory.create(
     AppModule,
     new ExpressAdapter(expressInstance),
@@ -26,6 +29,8 @@ export const createNestServer = async (expressInstance: express.Express) => {
   SwaggerModule.setup('api/docs', app, document);
 
   await app.init();
+  cachedApp = app;
+  return app;
 };
 
 export default async (req: any, res: any) => {
