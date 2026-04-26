@@ -100,4 +100,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-Built with ❤️ by [Your Name]
+Built with ❤️ by Siddhartha
